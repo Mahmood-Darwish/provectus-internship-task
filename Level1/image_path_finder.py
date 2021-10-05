@@ -18,12 +18,13 @@ def append_to_csv(output_file, user_id: int, path_to_csv: str) -> bool:
     r = csv.reader(open(output_file + "/output.csv", "r+"))
     lines = list(r)
     if not len(lines):
-        lines.append(["user_id", " first_name", " last_name", " birthts", " img_path"])
+        lines.append(["user_id", "first_name", "last_name", "birthts", "img_path"])
     jpg_path = path_to_csv[:-4]
     jpg_path += ".png"
-    jpg_path = " " + jpg_path
-    line_to_write = [str(user_id), *list(csv.reader(open(path_to_csv, "r+")))[1], jpg_path]
-    line_to_write[1] = " " + line_to_write[1]
+    f = open(path_to_csv, 'r+')
+    reader = csv.reader(f, delimiter=',', quoting=csv.QUOTE_NONE)
+    temp = [[x.strip() for x in row] for row in reader]
+    line_to_write = [str(user_id), *temp[1], jpg_path]
     for i in range(len(lines)):
         if lines[i][0] == line_to_write[0]:
             if lines[i] == line_to_write:
