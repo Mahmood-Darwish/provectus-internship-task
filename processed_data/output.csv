@@ -58,7 +58,7 @@ user_id,first_name,last_name,birthts,img_path
 1030,Kathleen,Gittens,921272400000,/home/mahmood/git_workspace/provectus task/provectus-internship-task/src-data/1030.png
 1043,John,Ramage,378507600000,/home/mahmood/git_workspace/provectus task/provectus-internship-task/src-data/1043.png
 1004,Maria,Crooks,1051214400000,/home/mahmood/git_workspace/provectus task/provectus-internship-task/src-data/1004.png
-1001,Rosa,Garcia,670626000000,/home/mahmood/git_workspace/provectus task/provectus-internship-task/src-data/1001.png
+1001,Rosa,Garcia,670626000000,None
 1081,Amy,Smith,785710800000,/home/mahmood/git_workspace/provectus task/provectus-internship-task/src-data/1081.png
 1095,Corey,Davis,1054411200000,/home/mahmood/git_workspace/provectus task/provectus-internship-task/src-data/1095.png
 1011,Glen,Martin,636066000000,/home/mahmood/git_workspace/provectus task/provectus-internship-task/src-data/1011.png
@@ -88,7 +88,7 @@ user_id,first_name,last_name,birthts,img_path
 1092,Alan,Mcgraw,469054800000,/home/mahmood/git_workspace/provectus task/provectus-internship-task/src-data/1092.png
 1096,James,Peacock,503442000000,/home/mahmood/git_workspace/provectus task/provectus-internship-task/src-data/1096.png
 1086,Nicole,Pharr,884552400000,/home/mahmood/git_workspace/provectus task/provectus-internship-task/src-data/1086.png
-1000,Susan,Lee,612302400000,/home/mahmood/git_workspace/provectus task/provectus-internship-task/src-data/1000.png
+1000,Susan,Lee,612302400000,None
 1024,William,Quick,340059600000,/home/mahmood/git_workspace/provectus task/provectus-internship-task/src-data/1024.png
 1050,Warren,Green,443048400000,/home/mahmood/git_workspace/provectus task/provectus-internship-task/src-data/1050.png
 1090,Thomas,Williams,946501200000,/home/mahmood/git_workspace/provectus task/provectus-internship-task/src-data/1090.png
