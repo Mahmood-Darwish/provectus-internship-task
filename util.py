@@ -1,6 +1,11 @@
 import os
 import csv
 
+input_path_real_data = "/home/mahmood/git_workspace/provectus task/provectus-internship-task/Level1/src-data"
+output_path_real_data = "/home/mahmood/git_workspace/provectus task/provectus-internship-task/Level1/processed_data"
+input_path_test_data = "/home/mahmood/git_workspace/provectus task/provectus-internship-task/Level1/unittests/demo-data"
+output_path_test_data = "/home/mahmood/git_workspace/provectus task/provectus-internship-task/Level1/unittests/demo-output"
+
 
 def millisecond_to_years(x):
     """

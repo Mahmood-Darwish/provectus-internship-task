@@ -70,7 +70,7 @@ def process(input_path: str, output_path: str) -> (int, list):
         raise ValueError("This directory doesn't exist")
     count = 0
     filenames = []
-    for filename in os.listdir(input_path):
+    for filename in sorted(os.listdir(input_path)):
         if filename.endswith('.csv'):
             user_id = find_png_and_id(input_path + "/" + filename)
             if user_id[1] == -1:
@@ -83,8 +83,6 @@ def process(input_path: str, output_path: str) -> (int, list):
 
 
 if __name__ == "__main__":
-    print(process("/home/mahmood/git_workspace/provectus task/provectus-internship-task/Level1/demo-data",
-                  "/home/mahmood/git_workspace/provectus task/provectus-internship-task/Level1/demo-output"))
     istr = input("Enter the input absolute path: ")
     ostr = input("Enter the output absolute path: ")
     print(process(istr, ostr))

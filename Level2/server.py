@@ -1,11 +1,14 @@
 from flask import Flask, request, jsonify
+import sys
+sys.path.append("/home/mahmood/git_workspace/provectus task/provectus-internship-task/")
 from Level1.image_path_finder import process
 from util import *
 from apscheduler.schedulers.background import BackgroundScheduler
 import atexit
+import util
 
-input_path = "/home/mahmood/git_workspace/provectus task/provectus-internship-task/src-data"
-output_path = "/home/mahmood/git_workspace/provectus task/provectus-internship-task/processed_data"
+input_path = util.input_path_real_data
+output_path = util.output_path_real_data
 
 
 def sched_process():
