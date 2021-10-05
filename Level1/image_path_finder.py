@@ -5,19 +5,25 @@ import csv
 
 def append_to_csv(output_file, user_id: int, path_to_csv: str) -> bool:
     """
-
-    :param output_file:
-    :param user_id:
-    :param path_to_csv:
-    :return:
+    Given the path to the .csv file and the user id, create the data needed and then
+    append it to output_file/output.csv.
+    :param output_file: path to where the output file should be.
+    :param user_id: user id to be added to the output file.
+    :param path_to_csv: path to the .csv file.
+    :return: true if the output.csv was changed, false if not.
     """
-    r = csv.reader(open(output_file + "/output.csv", "r"))
+    if not os.path.isfile(output_file + "/output.csv"):
+        f = open(output_file + "/output.csv", "w+")
+        f.close()
+    r = csv.reader(open(output_file + "/output.csv", "r+"))
     lines = list(r)
     if not len(lines):
-        lines.append(["user_id", "first_name", "last_name", "birthts", "img_path"])
+        lines.append(["user_id", " first_name", " last_name", " birthts", " img_path"])
     jpg_path = path_to_csv[:-4]
     jpg_path += ".png"
+    jpg_path = " " + jpg_path
     line_to_write = [str(user_id), *list(csv.reader(open(path_to_csv, "r+")))[1], jpg_path]
+    line_to_write[1] = " " + line_to_write[1]
     for i in range(len(lines)):
         if lines[i][0] == line_to_write[0]:
             if lines[i] == line_to_write:
@@ -36,9 +42,11 @@ def append_to_csv(output_file, user_id: int, path_to_csv: str) -> bool:
 
 def find_png(input_path: str) -> int:
     """
-    TODO
-    :param input_path:
-    :return:
+    Takes a path to a .csv file and checks if there's a .png file with the same name in the same directory.
+    if the file exists then returns the name of the file (since this is also the user id), if it doesn't exist
+    return -1.
+    :param input_path: path to the .csv file.
+    :return: user id if the file exists or -1 otherwise.
     """
     user_id = int(pathlib.Path(input_path).stem)
     input_path = input_path[:-4]
@@ -50,10 +58,12 @@ def find_png(input_path: str) -> int:
 
 def process(input_path: str, output_path: str) -> (int, list):
     """
-    TODO
-    :param input_path:
-    :param output_path:
-    :return:
+    Reads all files in input_path (absolute path). looks for a .png and a .csv files that have the same name and
+    combines them. Stores output in output_path/output.csv.
+    Returns the number of files found and their names.
+    :param input_path: path used for finding the input.
+    :param output_path: path used for finding the output file.
+    :return: number of files found and their names.
     """
     if not os.path.exists(os.path.dirname(input_path)):
         raise ValueError("This directory doesn't exist")
@@ -67,7 +77,12 @@ def process(input_path: str, output_path: str) -> (int, list):
             if append_to_csv(output_path, user_id, input_path + "/" + filename):
                 count += 1
                 filenames.append(pathlib.Path(filename).stem)
+    filenames.sort()
     return count, filenames
 
 
-print(process("/home/mahmood/git_workspace/provectus task/provectus-internship-task/Level1/demo-data", "/home/mahmood/git_workspace/provectus task/provectus-internship-task/Level1/demo-output"))
+if __name__ == "__main__":
+    print(process("/home/mahmood/git_workspace/provectus task/provectus-internship-task/Level1/demo-data", "/home/mahmood/git_workspace/provectus task/provectus-internship-task/Level1/demo-output"))
+    istr = input("Enter the input absolute path: ")
+    ostr = input("Enter the output absolute path: ")
+    print(process(istr, ostr))
