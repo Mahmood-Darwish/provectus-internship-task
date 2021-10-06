@@ -6,6 +6,7 @@ from util import *
 from apscheduler.schedulers.background import BackgroundScheduler
 import atexit
 import util
+from typing import Union
 
 input_path = util.input_path_real_data
 output_path = util.output_path_real_data
@@ -39,7 +40,7 @@ def process_data():
     return jsonify({'result': process(input_path, output_path)})
 
 
-def get_data(image_filter, min_age_filter, max_age_filter):
+def get_data(image_filter: Union[None, bool], min_age_filter: float, max_age_filter: float) -> list:
     """
     Gets the data from output.csv and removes the rows that don't pass the filters.
     :param image_filter: True, False, or None. Returns entries with photo path if true. Returns entries without
