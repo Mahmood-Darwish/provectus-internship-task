@@ -1,14 +1,16 @@
 from minio import Minio
 import config
-import os, io
+import os
+import io
+import sys
 import glob
-import server
+import app
 from minio.select import SelectRequest, CSVInputSerialization, CSVOutputSerialization
 
 
 def get_minio_client(access, secret):
     return Minio(
-        'localhost:9000',
+        sys.argv[1] + ":9000",
         access_key=access,
         secret_key=secret,
         secure=False
@@ -54,7 +56,8 @@ if __name__ == "__main__":
             "res", "output.csv", io.BytesIO(b"user_id,first_name,last_name,birthts,img_path"), 45,
         )
 
-    server.minio_client = minio_client
-    server.input_bucket = "src"
-    server.output_bucket = "res"
-    server.app.run()
+    app.minio_client = minio_client
+    app.input_bucket = "src"
+    app.output_bucket = "res"
+    port = int(os.environ.get('PORT', 5000))
+    app.app.run(host='0.0.0.0', port=port)

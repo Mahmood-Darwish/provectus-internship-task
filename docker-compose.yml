@@ -44,3 +44,14 @@ services:
       - 5050:5050
     depends_on:
       - db
+
+  web:
+    build: .
+    ports:
+      - 5000:5000
+    depends_on:
+      - db
+      - pgadmin
+      - minio
+      - minio-create-bucket
+
