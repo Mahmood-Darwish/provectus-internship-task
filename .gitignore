@@ -12,3 +12,10 @@
 venv
 /__pycache__/
 __pycache__
+/minio/
+minio
+pgadmin
+/pgadmin/
+postgres-data
+/postgres-data/
+
