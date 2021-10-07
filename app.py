@@ -4,6 +4,7 @@ from util import *
 from apscheduler.schedulers.background import BackgroundScheduler
 import atexit
 from typing import Union
+import db_handler
 
 
 minio_client = None
@@ -36,7 +37,8 @@ def process_data():
     :return: a tuple, the number of added or updated entries, and a sorted list of the user ids for
     new or updated entries
     """
-    return jsonify({'result': process(minio_client, input_bucket, output_bucket)})
+    process(minio_client, input_bucket, output_bucket)
+    return "Done."
 
 
 def get_data(image_filter: Union[None, bool], min_age_filter: float, max_age_filter: float) -> list:
@@ -50,8 +52,7 @@ def get_data(image_filter: Union[None, bool], min_age_filter: float, max_age_fil
     than min_age_filter.
     :return: list with filtered rows.
     """
-    lines = get_csv(minio_client, output_bucket, "output.csv", 5)
-    lines = lines[1:]
+    lines = db_handler.get_users_data('users')
     ans = []
     for i in range(len(lines)):
         if not check_image(lines[i], image_filter) or not check_min_age(lines[i], min_age_filter) or \
@@ -80,7 +81,3 @@ def process_request():
     else:
         image_filter = None
     return jsonify({'result': get_data(image_filter, min_age_filter, max_age_filter)})
-
-
-if __name__ == "__main__":
-    app.run(debug=True)
