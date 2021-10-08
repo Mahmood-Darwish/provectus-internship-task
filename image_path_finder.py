@@ -1,3 +1,4 @@
+import config
 from util import *
 from minio import Minio
 import os
@@ -7,13 +8,12 @@ import db_handler
 
 def append_to_csv(minio_client: Minio, input_bucket: str, object_name: str, user_id: (bool, int), output_bucket: str) -> None:
     """
-    Given the path to the .csv file and the user id, create the data needed and then
-    append it to output_file/output.csv.
-    :param output_file: path to where the output file should be.
-    :param user_id: user id to be added to the output file.
-    :param path_to_csv: path to the .csv file.
-    :param user_png: is there a photo for this .csv file.
-    :return: true if the output.csv was changed, false if not.
+    Given the info about a certain .csv file, create the necessary info and add it to output_bucket/output.csv.
+    :param minio_client: The minio client connected to.
+    :param input_bucket: The bucket where to find the csv file to append.
+    :param object_name:  The name of the .csv file.
+    :param user_id: A tuple that explains if there is a .png for that .csv and the user id for that .csv.
+    :param output_bucket: Where to save the output.csv.
     """
     lines = get_csv(minio_client, output_bucket, "output.csv", 5)
     if user_id[0]:
@@ -28,19 +28,18 @@ def append_to_csv(minio_client: Minio, input_bucket: str, object_name: str, user
     minio_client.remove_object(output_bucket, "output.csv")
     minio_client.fput_object(output_bucket, "output.csv", "temp_output.csv")
     os.remove("temp_output.csv")
-    if line_to_write[0] in db_handler.get_ids('users'):
-        db_handler.update_row("users", line_to_write)
-    else:
-        db_handler.insert_row("users", line_to_write)
+    db_handler.handle_row(config.table_name, line_to_write)
 
 
 def find_png_and_id(minio_client: Minio, input_bucket: str, obj_name: str) -> (bool, int):
     """
-    Takes a path to a .csv file and checks if there's a .png file with the same name in the same directory.
-    if the file exists then returns the name of the file (since this is also the user id), if it doesn't exist
-    return -1.
-    :param input_path: path to the .csv file.
-    :return: user id if the file exists or -1 otherwise.
+    Checks if the .csv input_bucket/obj_name has a proper id and if it does then checks if there is a .png file
+    with the same id.
+    :param minio_client: The minio client connected to.
+    :param input_bucket: The bucket where to find the inputs.
+    :param obj_name: The name of the .csv file.
+    :return: A tuple, first value is a true or false if a .png exists or not. The second value is a non-negative int
+    if the user_id is correct or -1 if not.
     """
     try:
         user_id = int(obj_name[:-4])
@@ -57,13 +56,12 @@ def find_png_and_id(minio_client: Minio, input_bucket: str, obj_name: str) -> (b
 
 def process(minio_client: Minio, input_bucket: str, output_bucket: str) -> None:
     """
-    Reads all files in input_path (absolute path). looks for a .png and a .csv files that have the same name and
-    combines them. Stores output in output_path/output.csv.
-    Returns the number of files found and their names.
-    :param minio_client: path used for finding the input.
-    :param input_bucket: path used for finding the input.
-    :param output_bucket: path used for finding the output file.
-    :return: number of files found and their names.
+    Reads all files in input_bucket in a minio client. looks for a .png and a .csv files
+    that have the same name and combines them. Creates a new file output_bucket/output.csv
+    with results and deletes the old one, replacing it.
+    :param minio_client: The minio client connected to.
+    :param input_bucket: The bucket where to find the inputs.
+    :param output_bucket: The bucket where to store the outputs.
     """
     minio_client.remove_object(output_bucket, "output.csv")
     minio_client.put_object(

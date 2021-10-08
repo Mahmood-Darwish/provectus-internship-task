@@ -1,18 +1,24 @@
 import csv
+import time
+import datetime
 from minio import Minio
 from minio.select import SelectRequest, CSVInputSerialization, CSVOutputSerialization
+from typing import Union
 
 
-def millisecond_to_years(x):
+def timestamp_to_years(x: int) -> float:
     """
-    Turns x millisecond to years.
-    :param x: number of milliseconds.
-    :return: the equivalent number of years.
+    Turns x timestamp to age in years.
+    :param x: Timestamp.
+    :return: the equivalent age.
     """
-    return x / 31556952000
+    temp = time.gmtime(x / 1000)
+    temp1 = datetime.date(temp.tm_year, temp.tm_mon, temp.tm_mday)
+    temp2 = datetime.date.today()
+    return (temp2 - temp1).days / 365
 
 
-def check_image(row, image_filter):
+def check_image(row: list, image_filter: Union[None, bool]) -> bool:
     """
     Checks if a certain row in the output.csv file correctly passes the filter.
     :param row: an entry in the .csv file.
@@ -30,7 +36,7 @@ def check_image(row, image_filter):
     return False
 
 
-def check_min_age(row, min_age_filter):
+def check_min_age(row: list, min_age_filter: float) -> bool:
     """
     Checks if a certain row in the output.csv file correctly passes the filter.
     :param row: an entry in the .csv file.
@@ -39,12 +45,12 @@ def check_min_age(row, min_age_filter):
     """
     if min_age_filter == -1:
         return True
-    if millisecond_to_years(int(row[-2])) >= min_age_filter:
+    if timestamp_to_years(int(row[-2])) >= min_age_filter:
         return True
     return False
 
 
-def check_max_age(row, max_age_filter):
+def check_max_age(row: list, max_age_filter: float) -> bool:
     """
     Checks if a certain row in the output.csv file correctly passes the filter.
     :param row: an entry in the .csv file.
@@ -53,16 +59,20 @@ def check_max_age(row, max_age_filter):
     """
     if max_age_filter == -1:
         return True
-    if millisecond_to_years(int(row[-2])) <= max_age_filter:
+    if timestamp_to_years(int(row[-2])) <= max_age_filter:
         return True
     return False
 
 
-def get_csv(minio_client: Minio, bucket: str, obj: str, num_col: int):
+def get_csv(minio_client: Minio, bucket: str, obj: str, num_col: int) -> list:
     """
-    Given an absolute path to a .csv, returns the contents of the csv file.
-    :param path: path to the .csv
-    :return: contents of the csv file.
+    Given a minio client with a bucket name and an object name, returns the csv file named obj in the bucket.
+    To parse the CSV file it needs the number of columns.
+    :param minio_client: Minio client where the data is put.
+    :param bucket: Name of the bucket.
+    :param obj: Name of the CSV file.
+    :param num_col: Number of rows in the CSV file.
+    :return: A list of lists where each inner list is a row in the CSV file.
     """
     with minio_client.select_object_content(
             bucket,
@@ -94,6 +104,11 @@ def get_csv(minio_client: Minio, bucket: str, obj: str, num_col: int):
     return ans
 
 
-def put_csv(path: str, lines: list):
+def put_csv(path: str, lines: list) -> None:
+    """
+    Takes a path and a list of lists. Creates a CSV file out of that list in that path.
+    :param path: The path to where to save the file.
+    :param lines: A list of lists. Each list is a row in the CSV file.
+    """
     w = csv.writer(open(path, "w+"))
     w.writerows(lines)

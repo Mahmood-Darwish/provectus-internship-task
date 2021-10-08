@@ -5,3 +5,7 @@ user = "postgres"
 password = "postgres"
 db_host = "db"
 minio_host = "minio"
+schedule_time = 120
+table_name = "users"
+input_bucket = "res"
+output_bucket = "src"
