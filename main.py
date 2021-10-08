@@ -2,7 +2,6 @@ from minio import Minio
 import config
 import os
 import io
-import sys
 import app
 from minio.select import SelectRequest, CSVInputSerialization, CSVOutputSerialization
 import db_handler
@@ -10,7 +9,7 @@ import db_handler
 
 def get_minio_client(access, secret):
     return Minio(
-        sys.argv[1] + ":9000",
+        config.minio_host + ":9000",
         access_key=access,
         secret_key=secret,
         secure=False
@@ -37,7 +36,7 @@ if __name__ == "__main__":
                 ),
         )
     except:
-        result = minio_client.put_object(
+        minio_client.put_object(
             "res", "output.csv", io.BytesIO(b"user_id,first_name,last_name,birthts,img_path"), 45,
         )
 

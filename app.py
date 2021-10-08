@@ -23,7 +23,7 @@ def sched_process():
 
 
 sched = BackgroundScheduler()
-sched.add_job(sched_process, 'interval', seconds=60)
+sched.add_job(sched_process, 'interval', seconds=120)
 sched.start()
 atexit.register(lambda: sched.shutdown())
 
@@ -38,7 +38,7 @@ def process_data():
     new or updated entries
     """
     process(minio_client, input_bucket, output_bucket)
-    return "Done."
+    return jsonify({"Result": "Done"})
 
 
 def get_data(image_filter: Union[None, bool], min_age_filter: float, max_age_filter: float) -> list:

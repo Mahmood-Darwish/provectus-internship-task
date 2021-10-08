@@ -1,27 +1,28 @@
 import psycopg2
+import config
 
 
 def init():
     """
-        Initiates the connection with the database 'dbname'
-        :return: (conn, crsr) -> (the connection object, the cursor to perform commands)
-        """
-    conn = psycopg2.connect(dbname="internship", user="postgres",
-                            password="postgres", host="localhost")
+    Initiates the connection with the database 'dbname'
+    :return: (conn, crsr) -> (the connection object, the cursor to perform commands)
+    """
+    conn = psycopg2.connect(dbname=config.db_name, user=config.user,
+                            password=config.password, host=config.db_host)
     return conn, conn.cursor()
 
 
 def get_users_data(table_name):
     """
-        Retrieves all the data in the table table_name
-        :param table_name: the name of the table
-        :return: a list that contains all the data in the table
+    Retrieves all the data in the table table_name
+    :param table_name: the name of the table
+    :return: a list that contains all the data in the table
 
-        NOTE:
-        the returned list will contain all the information about the users right after each other
-        without having each user in a separate list.
-        For example: returned_list = [user_id1, first_name1, last_name1, birthdate1, img_path1, user_id2, first_name2, .....]
-        """
+    NOTE:
+    the returned list will contain all the information about the users right after each other
+    without having each user in a separate list.
+    For example: returned_list = [user_id1, first_name1, last_name1, birthdate1, img_path1, user_id2, first_name2, .....]
+    """
     conn, crsr = init()
 
     crsr.execute(f"SELECT user_id, first_name, last_name, birthdate, img_path FROM {table_name};")
@@ -39,10 +40,10 @@ def get_users_data(table_name):
 
 def get_ids(table_name):
     """
-        Retrieves all the ids of the users inside the 'table_name' table
-        :param table_name: the name of the table
-        :return: a list of the ids of the users inside the table
-        """
+    Retrieves all the ids of the users inside the 'table_name' table
+    :param table_name: the name of the table
+    :return: a list of the ids of the users inside the table
+    """
     conn, crsr = init()
 
     crsr.execute(f"SELECT user_id FROM {table_name};")
@@ -58,9 +59,9 @@ def get_ids(table_name):
 def update_row(table_name, user):
     """
 
-        :param user: [first_name, last_name, birthts, img_path, user_id]
-        :return:
-        """
+    :param user: [first_name, last_name, birthts, img_path, user_id]
+    :return:
+    """
     conn, crsr = init()
 
     user = [user[1], user[2], user[3], user[4], user[0]]
@@ -87,8 +88,8 @@ def insert_row(table_name, user):
 
 def create_table_users():
     """
-        Creates the table users that we will use to migrate our data from output.csv to.
-        """
+    Creates the table users that we will use to migrate our data from output.csv to.
+    """
     conn, crsr = init()
 
     crsr.execute("""

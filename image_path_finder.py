@@ -65,7 +65,7 @@ def process(minio_client: Minio, input_bucket: str, output_bucket: str) -> None:
     :param output_bucket: path used for finding the output file.
     :return: number of files found and their names.
     """
-    minio_client.remove_object("res", "output.csv")
+    minio_client.remove_object(output_bucket, "output.csv")
     minio_client.put_object(
         output_bucket, "output.csv", io.BytesIO(b"user_id,first_name,last_name,birthts,img_path"), 45,
     )
