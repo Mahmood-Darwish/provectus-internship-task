@@ -69,7 +69,7 @@ The services need some time to set up after building. You should wait for a few 
 
 After running docker-compose as specified in the previous step you should have multiple services running. One of them is a flask server. 
 
-The flask server starts a scheduler that processes the input data in `src` every set amount of time (the default is 120 seconds and can be edited form `config.py` file) and puts the output data in `output.csv` and postgres DB.
+The flask server starts a scheduler that processes the input data in `src` every set amount of time (the default is 900 seconds and can be edited form `config.py` file) and puts the output data in `output.csv` and postgres DB.
 
 You can interact with the flask server with the following requests:
 
@@ -105,7 +105,7 @@ First go you `docker-compose.yml` and comment out or delete everything related t
 ```
 sudo docker-compose up
 ```
-Now you can use the service from the terminal or any IDE and it will work as expected provided that docker-composed finished building and setting up. This is helpful if you wanted to use a debugger on the code. 
+Now you can use the service from the terminal or any IDE and it will work as expected provided that docker-composed finished building and setting up. This is helpful if you wanted to use a debugger on the code. Make sure you have all the dependencies in `requirements.txt` installed.
 
 ### Safety Note
 The `config.py` shouldn't actually be uploaded to the git repo and `dockerfile` shouldn't use explicit values in the `ENV` statement in a production environment because they contain passwords, account names, environment variables. It was done this way to ease the use of this repo since this is just a test task. 
