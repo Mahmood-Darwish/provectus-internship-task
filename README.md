@@ -93,10 +93,58 @@ Very important note: You should notice that the web service connects to minio on
 
 
 <a name="theo"></a>
-# Theoretical Questions Level 3
+# Theoretical Questions
 
 ## Table of Contents
 1. [ SQL ](#sql)
 2. [ Algorithms And Data Structures ](#dsa)
 3. [ Linux Shell ](#linux)
 
+
+<a name="sql"></a>
+# 1. SQL
+  
+  1.
+
+  2. Here we changed the table name from `user` to `users`
+  
+  ```
+  SELECT lastname FROM users 
+  GROUP BY lastname 
+  HAVING count(lastname) > 1
+  ```
+  
+  3. Here we changed the table name from `user` to `users`
+  
+  ```
+  SELECT username, salary FROM 
+  (salary JOIN users ON salary.id = users.id)
+  ORDER BY salary DESC LIMIT 1 OFFSET 1
+  ```
+
+<a name="dsa"></a>
+# 2. Algorithms And Data Structures
+
+Answers for the next three questions are in theo.py
+
+
+<a name="linux"></a>
+# 3. Linux Shell
+
+  1. `sudo lsof -i :80 ; lsof -i :443`
+  
+  2. `cat /proc/PID/environ | tr '\0' '\n'`
+  
+  3.
+  
+  To run in the background:
+  
+  `nohup python /path/to/my_program.py &`
+  
+  To close first you have to find the PID using this:
+  
+  `ps ax | grep my_program.py`
+  
+  and then kill the process with:
+  
+  `kill PID`
