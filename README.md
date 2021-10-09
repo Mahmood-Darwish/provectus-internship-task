@@ -106,7 +106,7 @@ sudo docker-compose up
 Now you can use the service from the terminal or any IDE and it will work as expected provided that docker-composed finished building and setting up. This is helpful if you wanted to use a debugger on the code. 
 
 ### Safety Note
-The `config.py` and `dockerfile` shouldn't actually be uploaded to the git repo in a production environment because they contain passwords, account names, environment variables. It was done this way to ease the use of this repo since this is just a test task. 
+The `config.py` shouldn't actually be uploaded to the git repo and `dockerfile` shouldn't use explicit values in the `ENV` statement in a production environment because they contain passwords, account names, environment variables. It was done this way to ease the use of this repo since this is just a test task. 
 
 The proper way of handling that is creating a `.env` file that defines all those variables and use it in `dockerfile` and the web service itself and gitignoring that file when pushing to the repo.
 
@@ -124,6 +124,11 @@ The proper way of handling that is creating a `.env` file that defines all those
 # 1. SQL
   
   1.
+```
+SELECT users.id FROM 
+users LEFT JOIN departments ON users.id=departments.user_id
+WHERE departments.department_id != 1 OR departments.user_id IS NULL;
+```
 
   2. Here we changed the table name from `user` to `users`
   
