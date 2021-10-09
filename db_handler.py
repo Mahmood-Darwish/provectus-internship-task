@@ -2,28 +2,19 @@ import psycopg2
 import config
 
 
-def init():
-    """
-    Initiates the connection with the database.
-    :return: A tuple of (the connection object, the cursor to perform commands).
-    """
-    conn = psycopg2.connect(dbname=config.db_name, user=config.user,
-                            password=config.password, host=config.db_host)
-    return conn, conn.cursor()
-
-
 def get_users_data(table_name: str) -> list:
     """
     Retrieves all the rows in the table table_name.
     :param table_name: The name of the table.
     :return: A list of lists where each inner list is a row in the DB.
     """
-    conn, cur = init()
+    conn = psycopg2.connect(dbname=config.db_name, user=config.user,
+                            password=config.password, host=config.db_host)
+    cur = conn.cursor()
 
     cur.execute(f"SELECT user_id, first_name, last_name, birthdate, img_path FROM {table_name};")
     data = cur.fetchall()
 
-    conn.commit()
     cur.close()
     conn.close()
 
@@ -39,16 +30,17 @@ def get_ids(table_name: str) -> list:
     :param table_name: The name of the table to be searched.
     :return: A list of the user_ids of the users inside the table.
     """
-    conn, cur = init()
+    conn = psycopg2.connect(dbname=config.db_name, user=config.user,
+                            password=config.password, host=config.db_host)
+    cur = conn.cursor()
 
     cur.execute(f"SELECT user_id FROM {table_name};")
     data = cur.fetchall()
 
-    conn.commit()
     conn.close()
     cur.close()
 
-    return [user[0] for user in data]
+    return data
 
 
 def handle_row(table_name: str, user: list) -> None:
@@ -57,9 +49,14 @@ def handle_row(table_name: str, user: list) -> None:
     :param table_name: The table to check in.
     :param user: A list containing the row info of that user.
     """
-    conn, cur = init()
+    conn = psycopg2.connect(dbname=config.db_name, user=config.user,
+                            password=config.password, host=config.db_host)
+    cur = conn.cursor()
 
-    if user[0] in get_ids(table_name):
+    temp = get_ids(table_name)
+    temp = [val[0] for val in temp]
+
+    if user[0] in temp:
         user = [user[1], user[2], user[3], user[4], user[0]]
 
         cur.execute(f"""
@@ -80,7 +77,9 @@ def create_table_users(table_name: str) -> None:
     Creates the table that will have the data from output.csv.
     :param table_name: The name of the table to be created.
     """
-    conn, cur = init()
+    conn = psycopg2.connect(dbname=config.db_name, user=config.user,
+                            password=config.password, host=config.db_host)
+    cur = conn.cursor()
 
     cur.execute(f"""
             CREATE TABLE IF NOT EXISTS {table_name}(
