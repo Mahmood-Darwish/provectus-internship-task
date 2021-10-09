@@ -1,5 +1,5 @@
 # Provectus-Internship-Task
-Provectus test task results by Mahmood Darwish. In this file I will explain how to run and test my solution to the test task. I will also explain some of the logic in the code. Reading this file plus the documentation in the code itself should be suffienct to understand how this code works. The solution to the theoretical questions will also be included in this file.
+Provectus test task results by Mahmood Darwish. In this file I will explain how to run and test my solution to the test task. I will also explain some of the logic in the code. Reading this file plus the documentation in the code itself should be sufficient to understand how this code works. The solution to the theoretical questions will also be included in this file.
 
 Note: The solution was only tested on Ubuntu 20.04 LTS. 
 
@@ -55,9 +55,9 @@ When the service wants to read input data it will only look inside `src` so if y
 ```
 sudo chmod 777 minio/src/
 ```
-before you are allow to copy inside `src`. 
+before you are allowed to copy inside `src`. 
 
-Inside `res` there will be a file called `output.csv` which is the same `output.csv` discribed in the the test task.
+Inside `res` there will be a file called `output.csv` which is the same `output.csv` described in the the test task.
 
 Now you should have a running service.
 
@@ -73,10 +73,10 @@ The flask server starts a scheduler that processes the input data in `src` every
 
 You can interact with the flask server with the following requests:
 
-* a POST request on http://localhost:5000/data to manually process the data in `src` instead of waiting for the schedular.
+* a POST request on http://localhost:5000/data to force it to process the data in `src` instead of waiting for the schedular.
 * a GET request on http://localhost:5000/data to return the data in the postgres DB.
 
-The GET request can use a query string to give filters for the reterived data. The filters are `is_image_exists`, `min_age`, `and max_age`. For example:
+The GET request can use a query string to give filters for the retrieved data. The filters are `is_image_exists`, `min_age`, and `max_age`. For example:
 
 * http://localhost:5000/data?is_image_exists=true&min_age=30.5 will return all users that have a photo and their age >= 30.5.
 * http://localhost:5000/data?max_age=30.5 will return all users whose age <= 30.5 regardless of their photo status.
@@ -87,9 +87,28 @@ To check that the data is getting to the postgres DB correctly you can use the `
 <a name="code"></a>
 # 3. Understanding The Code
 
-The `main.py` file is the launching point of the web serivce. Starting from there and following the code plus the documentation in the code should be enough to understand the logic. 
+The `main.py` file is the launching point of the web service. It starts by making a connection with the `minio` and `postgres` services. It then creates 2 buckets in `minio` if they don't exist. The names of these buckets are taken from `config.py` file. After that, `main.py` starts a flask server which can be found in `app.py`. 
 
-Very important note: You should notice that the web service connects to minio on `minio:9000` and not `localhost:9000` and for the postgres DB the host is `db` and not `localhost`. This is because when adding the web serivce to the docker-compose file it will need to use the dns names of the images in the docker-compose file. If we removed the web service from docker-compose file and ran the docker-compose file without it and wanted to use the `main.py` file to connect with the services launched from docker-compose then in the `config.py` file we should change `db_host = "db"` to `db_host = "localhost"` and `minio_host = "minio"` to `minio_host = "localhost"`.
+The flask server starts a scheduler to process the input data periodically and has two end-points as defined in "Using The Service". Processing the input data, whether that is done because of scheduler or a call to the end-point, happens by making a call to a function called `process` in the script `image_path_finder.py` which handles the updating. All the previous scripts make use of helper function defined in `util.py` and from environment variables defined in `config.py`.
+
+### Different DNS Names In The Containers
+
+In the dockerfile you will notice that we define an environment variable called `IS_DOCKER`. When the web service is running it will look at that variable and depending on it, the service will either connect to `minio:9000` or `localhost:9000` for establishing the connection to `minio` service. That is because if the web service is running from inside the container then it needs to use the dns names for the containers instead of `localhost`. The same thing will happen for connecting with the database. It will either use `db` or `localhost`.
+
+### Running The Web Service Without Docker
+
+Due to handling the dns names as defined above you can actually use launch the service from outside the docker without problems.
+
+First go you `docker-compose.yml` and comment out or delete everything related to the web service. Then run 
+```
+sudo docker-compose up
+```
+Now you can use the service from the terminal or any IDE and it will work as expected provided that docker-composed finished building and setting up. This is helpful if you wanted to use a debugger on the code. 
+
+### Safety Note
+The `config.py` and `dockerfile` shouldn't actually be uploaded to the git repo in a production environment because they contain passwords, account names, environment variables. It was done this way to ease the use of this repo since this is just a test task. 
+
+The proper way of handling that is creating a `.env` file that defines all those variables and use it in `dockerfile` and the web service itself and gitignoring that file when pushing to the repo.
 
 
 <a name="theo"></a>
