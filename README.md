@@ -89,15 +89,17 @@ To check that the data is getting to the postgres DB correctly you can use the `
 
 The `main.py` file is the launching point of the web service. It starts by making a connection with the `minio` and `postgres` services. It then creates 2 buckets in `minio` if they don't exist. The names of these buckets are taken from `config.py` file. After that, `main.py` starts a flask server which can be found in `app.py`. 
 
-The flask server starts a scheduler to process the input data periodically and has two end-points as defined in "Using The Service". Processing the input data, whether that is done because of scheduler or a call to the end-point, happens by making a call to a function called `process` in the script `image_path_finder.py` which handles the updating. All the previous scripts make use of helper function defined in `util.py` and from environment variables defined in `config.py`.
+The flask server starts a scheduler to process the input data periodically and has two end-points as defined in "Using The Service". Processing the input data, whether that is done because of scheduler or a call to the end-point, happens by making a call to a function called `process` in the script `image_path_finder.py` which handles the updating. All the previous scripts make use of helper functions defined in `util.py` and from environment variables defined in `config.py`.
+
+Also, whenever the app needs to interact with the postgres DB it will use some of the functions in `db_handler.py`. For example, when sending the output from `output.csv` to the postgres DB it will use the function `handle_row` inside `db_handler.py`.
 
 ### Different DNS Names In The Containers
 
-In the dockerfile you will notice that we define an environment variable called `IS_DOCKER`. When the web service is running it will look at that variable and depending on it, the service will either connect to `minio:9000` or `localhost:9000` for establishing the connection to `minio` service. That is because if the web service is running from inside the container then it needs to use the dns names for the containers instead of `localhost`. The same thing will happen for connecting with the database. It will either use `db` or `localhost`.
+In the dockerfile you will notice that we define an environment variable called `IS_DOCKER`. This environment variable will tell the web service if it is running from docker or not. When the web service is running it will look at that variable and depending on it, the service will either connect to `minio:9000` or `localhost:9000` for establishing the connection to `minio` service. That is because if the web service is running from inside the container then it needs to use the dns names for the containers instead of `localhost`. The same thing will happen for connecting with the database. It will either use `db` or `localhost`.
 
 ### Running The Web Service Without Docker
 
-Due to handling the dns names as defined above you can actually use launch the service from outside the docker without problems.
+Due to handling the dns names as defined above you can actually launch the service from outside the docker without problems.
 
 First go you `docker-compose.yml` and comment out or delete everything related to the web service. Then run 
 ```
