@@ -130,19 +130,19 @@ Very important note: You should notice that the web service connects to minio on
 ```
 def count_connections(list1: list, list2: list) -> int:
 	ans = 0
-	
+
 	count = {}
-	
+
 	for i in list1:
 		if i in count:
 			count[i] += 1
 		else:
 			count[i] = 1
-	
+
 	for i in list2:
 		if i in count:
 			ans += 1
-	
+
 	return ans
 ```
 
@@ -151,21 +151,40 @@ def count_connections(list1: list, list2: list) -> int:
   
   The memory complexity is O(1) since we use a constant number of variables. `last_idx` would have at max 26 values inside it, therefore, constant memory.
 ```
-    def calc(s: str) -> int:
-        last_idx = {}
-        ans = 0
-        start_idx = 0
-     
-        for i in range(len(s)):
-            if s[i] in last_idx:
-                start_idx = max(start_idx, last_idx[s[i]] + 1)
-     
-            ans = max(ans, i - start_idx + 1)
-     
-            last_idx[s[i]] = i
-     
-        return ans
+def calc(s: str) -> int:
+	last_idx = {}
+	ans = 0
+	start_idx = 0
+
+	for i in range(len(s)):
+		if s[i] in last_idx:
+			start_idx = max(start_idx, last_idx[s[i]] + 1)
+
+		ans = max(ans, i - start_idx + 1)
+
+		last_idx[s[i]] = i
+
+	return ans
 ```
+  3.
+  ```
+def bs(nums: list, target: int) -> int:
+	ans = r + 1
+
+	l = 0
+	r = len(nums) - 1
+	while l <= r:
+	mid = (l + r) // 2
+	if nums[mid] == target:
+	    return mid
+	elif nums[mid] > target:
+	    ans = mid
+	    r = mid - 1
+	else:
+	    l = mid + 1
+
+	return ans
+  ```
 
 <a name="linux"></a>
 # 3. Linux Shell
