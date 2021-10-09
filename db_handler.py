@@ -59,7 +59,7 @@ def handle_row(table_name: str, user: list) -> None:
     """
     conn, cur = init()
 
-    if user in get_ids(table_name):
+    if user[0] in get_ids(table_name):
         user = [user[1], user[2], user[3], user[4], user[0]]
 
         cur.execute(f"""

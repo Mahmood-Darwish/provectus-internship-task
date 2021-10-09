@@ -23,8 +23,8 @@ def get_minio_client(access: str, secret: str) -> Minio:
 
 
 if __name__ == "__main__":
-    db_handler.create_table_users(config.table_name)
     minio_client = get_minio_client(config.access_key, config.secret_key)
+    db_handler.create_table_users(config.table_name)
     if not minio_client.bucket_exists(config.input_bucket):
         minio_client.make_bucket(config.input_bucket)
     if not minio_client.bucket_exists(config.output_bucket):
