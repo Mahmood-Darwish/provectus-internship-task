@@ -9,8 +9,7 @@ Note: The solution was only tested on Ubuntu 20.04 LTS.
 ## Table of Contents
 1. [ Installing The Service ](#install)
 2. [ Using The Service ](#use)
-3. [ Goal ](#goal)
-4. [ Authors ](#auth)
+3. [ Understanding The Code ](#code)
 
 <a name="install"></a>
 # 1. Installing The Service
@@ -61,7 +60,7 @@ Now you should have a running service.
 
 After running docker-compose as specified in the previous step you should have multiple services running. One of them is a flask server. 
 
-The flask server starts a scheduler that processes the input data in `src` every set amount of time and puts the output data in `output.csv` and postgres DB.
+The flask server starts a scheduler that processes the input data in `src` every set amount of time (the default is 120 seconds and can be edited form `config.py` file) and puts the output data in `output.csv` and postgres DB.
 
 You can interact with the flask server with the following requests:
 
@@ -74,3 +73,11 @@ The GET request can use a query string to give filters for the reterived data. T
 * http://localhost:5000/data?max_age=30.5 will return all users whose age <= 30.5 regardless of their photo status.
 * http://localhost:5000/data?is_image_exists=false will return all users without a photo.
 
+To check that the data is getting to the postgres DB correctly you can use the `pgadmin` service on http://localhost:5050 with the password `postgres`. Then make a connection to the postgres service on port 5432. Note that when you are making a connection to the postgres service the hostname/address is `db` and not `localhost` since docker images have their own dns names. The username and password for the connection are `postgres`.
+
+<a name="code"></a>
+# 3. Understanding The Code
+
+The main.py file is the launching point of the web serivce. Starting from there and following the code plus the documentation in the code should be enough to understand the logic. 
+
+Very important note: You should notice that the web service connects to minio on `minio:9000` and not `localhost:9000` and for the postgres DB the host is `db` and not `localhost`. This is because when adding the web serivce to the docker-compose file it will need to use the dns names of the images in the docker-compose file. If we removed the web service from docker-compose file and ran the docker-compose file without it and wanted to use the `main.py` file to connect with the services launched from docker-compose then in the `config.py` file we should change `db_host = "db"` to `db_host = "localhost"` and `minio_host = "minio"` to `minio_host = "localhost"`.
