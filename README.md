@@ -125,8 +125,47 @@ Very important note: You should notice that the web service connects to minio on
 <a name="dsa"></a>
 # 2. Algorithms And Data Structures
 
-Answers for the next three questions are in theo.py
+  1.
 
+```
+def count_connections(list1: list, list2: list) -> int:
+	ans = 0
+	
+	count = {}
+	
+	for i in list1:
+		if i in count:
+			count[i] += 1
+		else:
+			count[i] = 1
+	
+	for i in list2:
+		if i in count:
+			ans += 1
+	
+	return ans
+```
+
+  2. 
+  The time complexity for this solution is O(N) since dictionaries are hashmaps and we only loop over the string and do nothing else.
+  
+  The memory complexity is O(1) since we use a constant number of variables. `last_idx` would have at max 26 values inside it, therefore, constant memory.
+```
+    def calc(s: str) -> int:
+        last_idx = {}
+        ans = 0
+        start_idx = 0
+     
+        for i in range(len(s)):
+            if s[i] in last_idx:
+                start_idx = max(start_idx, last_idx[s[i]] + 1)
+     
+            ans = max(ans, i - start_idx + 1)
+     
+            last_idx[s[i]] = i
+     
+        return ans
+```
 
 <a name="linux"></a>
 # 3. Linux Shell
